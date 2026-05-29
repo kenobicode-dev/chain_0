@@ -139,6 +139,26 @@ const nodeTables = [
                 null: false
             }
         ]
+    },
+    {
+        name: "nodes_list",
+        columns: [
+            {
+                name: "id",
+                type: "TEXT",
+                null: false
+            },
+            {
+                name: "host",
+                type: "TEXT",
+                null: false
+            },
+            {
+                name: "port",
+                type: "TEXT",
+                null: false
+            }
+        ]
     }
 ];
 

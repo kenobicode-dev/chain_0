@@ -160,11 +160,11 @@ export default class POW {
 
             } catch (err) {
 
-                console.log(err);
+                // console.log(err);
 
-                console.log(
-                    "Введите корректные данные!"
-                );
+                // console.log(
+                    // "Введите корректные данные!"
+                // );
             }
         }
     }
@@ -380,7 +380,7 @@ export default class POW {
             );
 
             // Выводим текущий hash
-            console.log(hashResult);
+            // console.log(hashResult);
 
             /**
              * Проверяем валидность hash

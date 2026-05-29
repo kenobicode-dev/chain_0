@@ -25,9 +25,30 @@ app.use(cors({
 app.use("/api", auth_router);
 app.use("/api", receiving_router);
 
-async function setId() {
-  const node_id = await sha_256(JSON.stringify(node_config));
-  node_config.id = node_id;
+// async function get_curent_url() {
+//   try {
+//     const current_urls = [];
+//     node_config.root_nodes.forEach(node => {
+//       axios.get(`http://${node}/api/gcurl`)
+//         .then(res => {
+//           // console.log("RES", res.data);
+          
+//           node_config.root_nodes.push(res.data);
+//         })
+//         .catch(() => {
+//           return { message: "error" };
+//         })
+//     });
+//   } catch (e) {
+//     // console.log("get_curent_url => get", e);
+//   };
+// };
+
+async function set_id() {
+  if (!node_config.id || node_config.id == "") {
+    const node_id = await sha_256(JSON.stringify(node_config));
+    node_config.id = node_id;
+  }
 }
 
 open({
@@ -35,7 +56,7 @@ open({
   driver: sqlite_3.Database
 }).then((db) => {
   global.db = db;
-  setId();
+  set_id();
   console.log("DATABASE CONNECTED... 'OK'");
   console.log("--------------------------");
   db_generate()
@@ -46,17 +67,12 @@ open({
     });
   start_node();
 })
-.catch((e) => {
-  console.log("DATABASE CONNECTED... 'ERROR'", e);
-});
+  .catch((e) => {
+    console.log("DATABASE CONNECTED... 'ERROR'", e);
+  });
 
 async function start_node() {
-  try {
-    const host = Object.values(os.networkInterfaces())
-      .flat()
-      .find(iface => iface.family === 'IPv4' && !iface.internal)
-      ?.address;
-    node_config.host = host;
+  try {    
     app.listen(node_config.port, () => {
       console.log("NODE STARTED... 'OK'");
       console.log("CONFIG:");
@@ -66,6 +82,6 @@ async function start_node() {
       console.log("--------------------------");
     });
   } catch (error) {
-    console.log("NODE CRASH... 'ERROR'", error);
+    // console.log("NODE CRASH... 'ERROR'", error);
   };
 };

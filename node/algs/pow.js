@@ -151,7 +151,7 @@ export default class POW {
 
             } catch (err) {
 
-                console.log(err);
+                // console.log(err);
 
                 console.log(
                     "Введите корректные данные!"

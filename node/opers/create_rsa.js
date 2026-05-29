@@ -12,8 +12,7 @@ async function create_rsa(id) {
                 ${JSON.stringify(private_key)}
             )`
         );
-        console.log("has_rsa", has_rsa);
-        
+
         if (has_rsa) {
             console.log("RSA CREATED: 'OK'");
         }

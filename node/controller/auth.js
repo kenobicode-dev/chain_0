@@ -1,3 +1,16 @@
+// Auth dataset template.
+// {
+//     "data": {
+//         "name": "test",
+//         "secrets": {
+//             "1": "ddwdwdwdwdwdwdwdwdwdwdwdwdwdwd",
+//             "2": "ddwdwdwdwdwdwdwdwdwdwdwdwdwdwd",
+//             "3": "ddwdwdwdwdwdwdwdwdwdwdwdwdwdwd",
+//             "4": "ddwdwdwdwdwdwdwdwdwdwdwdwdwdwd"
+//         }
+//     }
+// }
+
 const { isEqual } = require("lodash");
 const sha_256 = require("js-sha256");
 const bcrypt = require("bcrypt");
