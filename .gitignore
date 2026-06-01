@@ -1,3 +1,11 @@
 # Node
 node_modules
 npm-debug.log
+/node/db/*.sqlite
+/node/db/*.sqlite3
+/node/db/*.db
+/node/db/*.db3
+node/db/*.sqlite
+node/db/*.sqlite3
+node/db/*.db
+node/db/*.db3
