@@ -24,7 +24,23 @@ class Transfer {
                     return JSON.stringify({ messages:"Error", status: 500 })
                 })
         });
+    };
 
+    async send_new_node() {
+        const node_data = {
+            id: node_config.id,
+            host: node_config.host,
+            port: node_config.port
+        };
+        node_config.root_nodes.forEach(node => {
+            axios.post(`http://${node}/api/incoming_new_node`, { node_data })
+                .then(() => {
+                    return { messages:"Ok", status: 200,  }
+                })
+                .catch(e => {
+                    return { messages:"Error", error: e.response }
+                });
+        });
     };
 };
 module.exports = new Transfer();

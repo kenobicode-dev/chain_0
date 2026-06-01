@@ -1,24 +1,7 @@
 const node_config = require("../conf/node_conf.js");
-
 const { decrypt } = require("../opers/encdec_rsa.js");
 
 class Receiving {
-
-    async get_curent_url() {
-        try {
-            const current_urls = [];
-            node_config.root_nodes.forEach(node => {
-                console.log("NODE", node);
-                axios.get(`http://${node}/api/gcurl`)
-                    .then(res => {
-                        return res.json({ messages:"Ok", status: 200 });
-                    });
-            });
-        } catch (e) {
-            return res.json({ messages:"Error", status: 500 });
-        };
-    };
-
     async gcurl(req, res, next) {
         try {
             const node_address = await`${node_config.host}:${node_config.port}`;
@@ -60,11 +43,34 @@ class Receiving {
                     )`
                 );
             }
-            
             return res.json({ messages: `New Tx: ${tx_data.data.tx_time_stamp}` });
         } catch (e) {
             next(e);
             return res.json({ messages: `New Tx Error: ${e?.data?.error || e?.data?.status}` });
+        };
+    };
+
+    async seve_incoming_node(req, res, next) {
+        try {
+            const node_data = req.body.node_data;
+            const id = node_data.id;
+            const has_host = await db.all(`SELECT * FROM nodes_list WHERE id = '${id}'`);
+
+            if (!has_host || !has_host.length) {
+                await db.all(
+                    `INSERT INTO nodes_list (id, host, port) 
+                    VALUES (
+                        ${JSON.stringify(node_data.id)}, 
+                        ${JSON.stringify(node_data.host)}, 
+                        ${JSON.stringify(node_data.port)}
+                    )`
+                );
+                console.log("NEW NODE ADDED");
+            }
+            return res.json({ messages: `New node added: ${node_data.id}`, status: "Ok" });
+        } catch (e) {
+            next(e);
+            return res.json({ messages: `New node Error: ${e?.data?.error || e?.data?.status}` });
         };
     };
 };

@@ -10,7 +10,8 @@ const db_generate = require("./conf/db_conf.js");
 const node_config = require("./conf/node_conf.js");
 const auth_router = require("./router/auth_router.js");
 const receiving_router = require("./router/receiving_router.js");
-
+const external_router = require("./controller/external/router/external.js");
+const transfer = require("./controller/transfer.js");
 
 const os = require("os");
 const app = express();
@@ -24,25 +25,7 @@ app.use(cors({
 
 app.use("/api", auth_router);
 app.use("/api", receiving_router);
-
-// async function get_curent_url() {
-//   try {
-//     const current_urls = [];
-//     node_config.root_nodes.forEach(node => {
-//       axios.get(`http://${node}/api/gcurl`)
-//         .then(res => {
-//           // console.log("RES", res.data);
-          
-//           node_config.root_nodes.push(res.data);
-//         })
-//         .catch(() => {
-//           return { message: "error" };
-//         })
-//     });
-//   } catch (e) {
-//     // console.log("get_curent_url => get", e);
-//   };
-// };
+app.use("/ext", external_router);
 
 async function set_id() {
   if (!node_config.id || node_config.id == "") {
@@ -52,7 +35,7 @@ async function set_id() {
 }
 
 open({
-  filename: 'node/db/data.db',
+  filename: "node/db/data.db",
   driver: sqlite_3.Database
 }).then((db) => {
   global.db = db;
@@ -80,6 +63,7 @@ async function start_node() {
         console.log(`${k}: ${v}`);
       });
       console.log("--------------------------");
+      transfer.send_new_node();
     });
   } catch (error) {
     // console.log("NODE CRASH... 'ERROR'", error);
