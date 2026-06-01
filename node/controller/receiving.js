@@ -26,9 +26,9 @@ class Receiving {
             const enc_data = req.body.enc_data;
             const id = node_config.id;
             const pk = await db.all(`SELECT private_key FROM temp WHERE id = '${id}'`);
-            // const decrypt_data = decrypt(enc_data, pk[0].private_key);
-            const decrypt_data = enc_data;
+            const decrypt_data = decrypt(enc_data, pk[0].private_key);
             const tx_data = JSON.parse(decrypt_data);
+            console.log("tx_data", tx_data);
             const has_tx = await db.all(`SELECT * FROM peers WHERE peer_address = '${tx_data.data.peer_address}'`);
             if (!has_tx || !has_tx.length) {
                 await db.all(
