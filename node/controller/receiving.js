@@ -1,5 +1,5 @@
 const node_config = require("../conf/node_conf.js");
-const { decrypt } = require("../opers/encdec_rsa.js");
+const decrypt = require("../opers/encdec_aes.js");
 
 class Receiving {
     async gcurl(req, res, next) {
@@ -23,12 +23,7 @@ class Receiving {
 
     async acceptance(req, res, next) {
         try {
-            const enc_data = req.body.enc_data;
-            const id = node_config.id;
-            const pk = await db.all(`SELECT private_key FROM temp WHERE id = '${id}'`);
-            const decrypt_data = decrypt(enc_data, pk[0].private_key);
-            const tx_data = JSON.parse(decrypt_data);
-            console.log("tx_data", tx_data);
+            const tx_data = JSON.parse(req.body.enc_data);
             const has_tx = await db.all(`SELECT * FROM peers WHERE peer_address = '${tx_data.data.peer_address}'`);
             if (!has_tx || !has_tx.length) {
                 await db.all(

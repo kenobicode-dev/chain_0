@@ -32,12 +32,12 @@ class Auth {
                     const ts = new Date();
                     const tx_data = {
                         name: name,
-                        secrets: sha_256(JSON.stringify(secrets)),
+                        secrets: await sha_256( await sha_256(JSON.stringify(secrets))),
                         peer_address: await sha_256(await bcrypt.hash((name + sha_256(JSON.stringify(secrets)) + ts), 3)),
                         tx_time_stamp: ts,
                     };
                     const current_tx = { ...tx_data, tx_hash: sha_256(JSON.stringify(tx_data)), peer_balance: curr_balance };
-                    create_rsa(sha_256(JSON.stringify(tx_data.peer_address)));
+                    // create_rsa(sha_256(JSON.stringify(tx_data.peer_address)));
                     await db.all(
                         `INSERT INTO peers (name, secrets, peer_address, tx_hash, tx_time_stamp, peer_balance) 
                         VALUES (
@@ -68,7 +68,7 @@ class Auth {
             let result;
             const peer_list = await db.all(`SELECT * FROM peers WHERE name = '${name}'`);
             if (peer_list && peer_list.length) {
-                peer = peer_list.find(p => p.name === name && isEqual(p.secrets, sha_256(JSON.stringify(secrets))));
+                peer = peer_list.find(p => p.name === name && isEqual(p.secrets, sha_256(sha_256(JSON.stringify(secrets)))));
             };
             if (peer && peer.secrets) {
                 result = peer_transform(peer);
