@@ -159,6 +159,31 @@ const nodeTables = [
                 null: false
             }
         ]
+    },
+    {
+        name: "sessions",
+        columns: [
+            {
+                name: "peer_address",
+                type: "TEXT",
+                null: false
+            },
+            {
+                name: "ts_start",
+                type: "TEXT",
+                null: false
+            },
+            {
+                name: "node_id",
+                type: "TEXT",
+                null: false
+            },
+            {
+                name: "period",
+                type: "TEXT",
+                null: false
+            }
+        ]
     }
 ];
 

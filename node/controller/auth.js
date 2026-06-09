@@ -1,15 +1,3 @@
-// Auth dataset template.
-// {
-//     "data": {
-//         "name": "test",
-//         "secrets": {
-//             "1": "ddwdwdwdwdwdwdwdwdwdwdwdwdwdwd",
-//             "2": "ddwdwdwdwdwdwdwdwdwdwdwdwdwdwd",
-//             "3": "ddwdwdwdwdwdwdwdwdwdwdwdwdwdwd",
-//             "4": "ddwdwdwdwdwdwdwdwdwdwdwdwdwdwd"
-//         }
-//     }
-// }
 
 const { isEqual } = require("lodash");
 const sha_256 = require("js-sha256");
@@ -17,6 +5,7 @@ const bcrypt = require("bcrypt");
 const peer_transform = require("../transform/peer_transform.js");
 const create_rsa = require("../opers/create_rsa.js");
 const transfer = require("../controller/transfer.js");
+const sessions = require("../controller/sessions.js");
 
 class Auth {
     async registration(req, res, next) {
@@ -37,7 +26,7 @@ class Auth {
                         tx_time_stamp: ts,
                     };
                     const current_tx = { ...tx_data, tx_hash: sha_256(JSON.stringify(tx_data)), peer_balance: curr_balance };
-                    // create_rsa(sha_256(JSON.stringify(tx_data.peer_address)));
+
                     await db.all(
                         `INSERT INTO peers (name, secrets, peer_address, tx_hash, tx_time_stamp, peer_balance) 
                         VALUES (
@@ -71,6 +60,7 @@ class Auth {
                 peer = peer_list.find(p => p.name === name && isEqual(p.secrets, sha_256(sha_256(JSON.stringify(secrets)))));
             };
             if (peer && peer.secrets) {
+                sessions.set_session(peer.peer_address);
                 result = peer_transform(peer);
             };
             if (!result) {
